@@ -59,7 +59,7 @@ $celementsweb.addExtJSfileOnce('Tools.DMSDictionary;dmsDocumentUploader.js', 'fi
 #end
 
 #macro(includeFileUpload $attachmentsDoc $teilnehmer)
-<div id="imagePickerUploadArea">
+<div id="celdms_UploadArea">
 <form id="celdms_upload_Form" action="$doc.getURL('view')" method="post" enctype="multipart/form-data"> 
    <div id="progressBar" style="display:none">
       <img src="$services.celementsweb.getSkinFile(':celRes/ajax-loader.gif', 'file')" />

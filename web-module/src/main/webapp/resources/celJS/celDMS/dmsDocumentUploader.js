@@ -1,6 +1,6 @@
 Event.observe(window, 'load', function(){
   getUploadToken();
-  $$('#imagePickerUploadArea .celfileupload').each(function(elem) {
+  $$('#celdms_upload_Form .celfileupload').each(function(elem) {
     elem.observe('celements:uploadfinished', pickerUploadFinshed);
   });
 });
@@ -29,6 +29,9 @@ var getUploadToken = function() {
 
 var pickerUploadFinshed = function(event) {
   var uploadResult = event.memo.uploadResult;
+  $('celdms_upload_Form').getInputs().each(function(inputElem) {
+    inputElem.addClassName('celIgnoreDirty');
+  });
   if (uploadResult && uploadResult.success && (uploadResult.success == 1)) {
     var newAttElem = new Element('div').addClassName('attachment');
     newAttElem.update(new Element('span').addClassName('mime'));
