@@ -1,15 +1,10 @@
-<<<<<<< HEAD
 <a href="?xpage=celements_ajax&ajax_mode=createDocument&docType=DMS-Document"><img src="$services.celementsweb.getSkinFile(':icons/silk/add.gif', 'file')">Neues Dokument anlegen</a>
 #set($query = $services.lucene.createQuery())
 #set($devNull = $query.addRestriction($services.lucene.createRestriction("Celements2.PageType.page_type", '"DMS-Document"')))
 #set($q = '"')
-#set($labelVal = "${q}${doc.getName()}${q}")
-#set($devNull = $query.addRestriction($services.lucene.createRestriction("DMSClasses.LabelClass.label_ref", $labelVal)))
+#set($labelVal = "${q}${doc.getFullName()}${q}")
+#set($devNull = $query.addRestriction($services.lucene.createRestriction("DMSClasses.LabelRefClass.label_ref", $labelVal)))
 #set($luceneQuery = "$query.getQueryString()")
 #set($results = $xwiki.lucene.getSearchResults($luceneQuery, "title" ,"default,de"))
 #set($resultList = $results.getResults())
 $xwiki.includeForm('LocalMacros.displayFolderContent', false)
-=======
-
-<a href="?xpage=celements_ajax&ajax_mode=createDocument&docType=DMS-Document"><img src="$services.celementsweb.getSkinFile(':icons/silk/add.gif', 'file')">Neues Dokument anlegen</a>
->>>>>>> c405c1520bff7b94e67e10ee9af96c08d330da06
