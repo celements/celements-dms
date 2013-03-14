@@ -1,0 +1,14 @@
+#set($docType = $request.get('docType'))
+#*
+#if($services.org.isValidDocType("$!docType"))
+  #set($editURL = $services.org.getDocumentCreateLink("$!docType"))
+  $response.sendRedirect($editURL)
+*#
+#if("$!docType" == 'DMS-Document')
+  #set($labelFN = $services.model.serialize($doc.documentReference))
+  #set($newDocFN = $celementsweb.getNextTitledPageFullName($doc.getSpace(), 'Document'))
+  #set($editURL = $xwiki.getURL($newDocFN, 'inline', "labelFN=$labelFN&template=DMS-Templates.DMS-Document"))
+  $response.sendRedirect($editURL)
+#else
+  Invalid doc type: $!docType
+#end

@@ -1,0 +1,2 @@
+
+<a href="?xpage=celements_ajax&ajax_mode=createDocument&docType=DMS-Document"><img src="$services.celementsweb.getSkinFile(':icons/silk/add.gif', 'file')">Neues Dokument anlegen</a>
