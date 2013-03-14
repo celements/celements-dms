@@ -5,9 +5,10 @@
   $response.sendRedirect($editURL)
 *#
 #if("$!docType" == 'DMS-Document')
-  #set($labelFN = $services.model.serialize($doc.documentReference))
+  #set($labelFN = $services.model.serialize($doc.documentReference, 'local'))
   #set($newDocFN = $celementsweb.getNextTitledPageFullName($doc.getSpace(), 'Document'))
-  #set($editURL = $xwiki.getURL($newDocFN, 'inline', "labelFN=$labelFN&template=DMS-Templates.DMS-Document"))
+  #set($xredirect = "$escapetool.url($doc.getURL('view'))")
+  #set($editURL = $xwiki.getURL($newDocFN, 'inline', "labelFN=$labelFN&template=DMS-Templates.DMS-Document&xredirect=$!{xredirect}"))
   $response.sendRedirect($editURL)
 #else
   Invalid doc type: $!docType
