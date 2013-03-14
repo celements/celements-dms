@@ -1,0 +1,94 @@
+<div style="position: relative; border-top: 1px solid darkgrey; border-bottom: 1px solid darkgrey;">
+  Erweiterte Suche:
+  <form action="$xwiki.getURL('Content.Search')" method="get">
+    <table style="width: 100%;">
+      <tr>
+       <td>Irgendwo:</td><td colspan="3"><input style="width: 250px;" type="text" name="q" value="$!request.q" /></td>
+      </tr>
+      <tr>
+       <td>Status:</td>
+       <td>
+         <select name="qStatus">
+          <option value="">---</option>
+           #set($xwql = "from doc.object(Celements2.PageType) as pt where pt.page_type='DMS-Status' order by doc.fullName")
+           #foreach($stat in $services.query.xwql($xwql).execute())
+             <option value="$stat"
+               #if("$!request.qStatus" == "$!stat") selected="selected" #end
+             >$xwiki.getDocument($stat).getTitle()</option>
+           #end
+         </select>
+       </td>
+       <td>$msg.get('celdms_editor_keywords')</td>
+       <td><input type="text" name="qKeys" value="$!request.qKeys" /></td>
+      </tr>
+      <tr>
+       <td>$msg.get('celdms_editor_docname'):</td><td><input type="text" name="qTitle" value="$!request.qTitle" /></td>
+       <td>Autor:</td><td><input type="text" name="qAuthor" value="$!request.qAuthor" /></td>
+      </tr>
+      <tr>
+       <td>Version:</td><td><input type="text" name="qVersion" value="$!request.qVersion" /></td>
+       <td>Letzte &auml;nderung:<br />Format yyyyMMddHHmm</td><td><input type="text" name="qDate" value="$!request.qDate" /></td>
+      </tr>
+      <tr>
+       <td>Dateiname:</td><td><input type="text" name="qFilename" value="$!request.qFilename" /></td>
+       <td>Dateiinhalt:<br />(nur f&uuml;r gewisse Dateitypen)</td><td><input type="text" name="qFileContent" value="$!request.qFileContent" /></td>
+      </tr>
+    </table>
+    <input type="submit" value="Erweitert Suchen" />
+  </form>
+</div>
+#set($query = $services.lucene.createQuery())
+#set($devNull = $query.addRestriction($services.lucene.createRestriction("Celements2.PageType.page_type", '"DMS-Document"')))
+#if("$!request.q" != '')
+  #set($restrList = $util.getArrayList())
+  #set($devNull = $restrList.add(${services.lucene.createRestriction('DMSClasses.DocumentClass.status', "$!request.q")}))
+  #set($devNull = $restrList.add(${services.lucene.createRestriction('DMSClasses.DocumentClass.keywords', "$!request.q")}))
+  #set($devNull = $restrList.add(${services.lucene.createRestriction('DMSClasses.DocumentClass.docname', "$!request.q")}))
+  #set($devNull = $restrList.add(${services.lucene.createRestriction('DMSClasses.DocumentClass.author', "$!request.q")}))
+  #set($devNull = $restrList.add(${services.lucene.createRestriction('DMSClasses.DocumentClass.version', "$!request.q")}))
+  #set($devNull = $restrList.add(${services.lucene.createRestriction('date', "$!request.q")}))
+  #set($devNull = $restrList.add(${services.lucene.createRestriction('filename', "$!request.q")}))
+  #set($fileContentSearch = "AND $!request.qFileContent")
+  #set($devNull = $query.addOrRestrictionList($restrList))
+#end
+#if("$!request.qStatus" != '')
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('DMSClasses.DocumentClass.status', "$!request.qStatus")}))
+  #set($noDeletedRestriction = "")
+#else
+  #set($statusDeleted = '"DMSStati.zzzDeleted"')
+  #set($noDeletedRestriction = "AND NOT ${services.lucene.createRestriction('DMSClasses.DocumentClass.status', $statusDeleted).getRestriction()}")
+#end
+#if("$!request.qKeys" != '')
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('DMSClasses.DocumentClass.keywords', "$!request.qKeys")}))
+#end
+#if("$!request.qTitle" != '')
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('DMSClasses.DocumentClass.docname', "$!request.qTitle")}))
+#end
+#if("$!request.qAuthor" != '')
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('DMSClasses.DocumentClass.author', "$!request.qAuthor")}))
+#end
+#if("$!request.qVersion" != '')
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('DMSClasses.DocumentClass.version', "$!request.qVersion")}))
+#end
+#if("$!request.qDate" != '')
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('date', "$!request.qDate")}))
+#end
+#if(("$!request.qFilename" != '') || ("$!request.qFileContent" != ''))
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('type', "attachment")}))
+#end
+#if("$!request.qFilename" != '')
+  #set($devNull = $query.addRestriction(${services.lucene.createRestriction('filename', "$!request.qFilename")}))
+#end
+#if("$!request.qFileContent" != '')
+  #set($q = '"')
+  #set($fileContentSearch = "AND +${q}$!{request.qFileContent}${q}")
+#else
+  #set($fileContentSearch = "")
+#end
+##TODO make not available in API
+#set($documentTemplate = '"DMS-Templates"')
+#set($luceneQuery = "${query.getQueryString()} AND NOT ${services.lucene.createRestriction('space', $documentTemplate).getRestriction()}")
+#set($luceneQuery = "$luceneQuery $fileContentSearch $noDeletedRestriction")
+#set($results = $xwiki.lucene.getSearchResults($luceneQuery, "title" ,"default,de"))
+#set($resultList = $results.getResults())
+$xwiki.includeForm('LocalMacros.displayFolderContent', false)
