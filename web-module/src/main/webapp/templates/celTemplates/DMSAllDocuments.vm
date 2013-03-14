@@ -1,7 +1,7 @@
 #set($query = $services.lucene.createQuery())
 #set($devNull = $query.addRestriction($services.lucene.createRestriction("Celements2.PageType.page_type", '"DMS-Document"')))
-
-
+##TODO make not available in API
+#set($documentTemplate = '"DMS-Templates"')
 #set($luceneQuery = "${query.getQueryString()} AND NOT ${services.lucene.createRestriction('space', $documentTemplate).getRestriction()}")
 #set($results = $xwiki.lucene.getSearchResults($luceneQuery, "title" ,"default,de"))
 #set($resultList = $results.getResults())
