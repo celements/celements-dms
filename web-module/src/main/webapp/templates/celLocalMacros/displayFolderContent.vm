@@ -16,7 +16,7 @@
       $!tmpobj.getProperty('author').getValue()
     </td>
     <td>
-      $!tmpobj.getProperty('status').getValue()
+      $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
     </td>
   </tr>
   #end
