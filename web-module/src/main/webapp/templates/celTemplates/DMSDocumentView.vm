@@ -5,8 +5,6 @@
 #set($cel_editobj_title = $adminMsg.get('celdms_document_edit'))
 #set($cel_editobj_hasObjAddLink = false)
 #set($cel_editobj_hasObjRemoveLink = false)
-<div id="edit_celdms_document" class="edit_celdms_section">
-<div id="edit_celdms_document_left" class="celdms_edit_column_left">
 #set($cel_curObj = '')
 #set($cel_curObj = $doc.getObject('DMSClasses.DocumentClass', false))
 <div class="celdms_breadcrums">
@@ -30,6 +28,8 @@
   <img src="$celementsweb.getSkinFile(':celRes/editorsupport/pencil.gif', 'file')" alt="bearbeiten"/>
 </a>
 #end
+<div id="edit_celdms_document" class="edit_celdms_section">
+<div id="edit_celdms_document_left" class="celdms_edit_column_left">
 #set($cel_editobj_classname = "DMSClasses.DocumentClass")
 #set($cel_editobj_nb = $cel_curObj.getNumber())
 #set($cel_editobj_properties = "docname,status,author")

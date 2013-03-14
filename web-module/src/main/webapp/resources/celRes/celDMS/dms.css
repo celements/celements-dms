@@ -1,0 +1,15 @@
+.edit_celdms_section {
+  position: relative;
+}
+.celdms_edit_column_right,
+.celdms_edit_column_left {
+  width: 48%;
+  display: inline-block;
+}
+.editblock dt.label {
+  font-weight: bold;
+}
+.celdms_viewer .editblock dt.label {
+  float: left;
+  margin-right: 20px;
+}
