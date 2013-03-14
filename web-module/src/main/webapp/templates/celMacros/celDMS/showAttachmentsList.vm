@@ -1,0 +1,37 @@
+    ###
+    ### List document attachments
+    ###
+    #if("$!redirect" == '')
+    #if("$!request.xredirect" != '')
+    #set($redirect = $request.xredirect)
+    #else
+    #set($redirect = "${doc.getURL()}#Attachments")
+    #end
+    #end
+    #set($showactions = 0)
+    #set($attachments = $attachmentsDoc.attachmentList)
+        <div id="attachmentscontent" class="xwikiintracontent">
+        <div id="attw">
+          <div id="_attachments">
+    #if($attachments.size()>0)
+    #foreach ($attach in $attachments)
+            <div class="attachment #if($velocityCount % 2 == 0) even #else odd #end">
+              <span class="mime">#mimetypeimg($attach.getMimeType().toLowerCase() $attach.getFilename().toLowerCase())</span>
+              <div class="information">
+              <span class="name"><a href="$attachmentsDoc.getAttachmentURL(${attach.filename}, 'download')" title="$msg.get('core.viewers.attachments.download')" target="_blank">#packName($attach.filename)</a></span>
+              <span class="version"><a href="$attachmentsDoc.getAttachmentURL(${attach.filename}, 'viewattachrev')" title="$msg.get('core.viewers.attachments.showHistory')">$attach.version</a></span>
+              <div class="meta">
+              <span class="publisher">$msg.get('core.viewers.attachments.author', [$xwiki.getUserName($attach.author)])</span>
+              <span class="date">$msg.get('core.viewers.attachments.date', [$!xwiki.formatDate($attach.date)])</span>
+              <span class="size">(#dynamicsize($attach.filesize))</span>
+              </div>
+              </div>
+            </div> ## row
+    #end ## foreach
+    #else ## No attachments
+    <p class="noitems">$msg.get('core.viewers.attachments.noAttachments')</p>
+    #end
+
+          </div> ## attachments
+          </div> ## attw
+        </div> ## attachmentscontent    

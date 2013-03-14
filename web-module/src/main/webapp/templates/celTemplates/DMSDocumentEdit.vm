@@ -100,7 +100,9 @@ $celementsweb.addExtJSfileOnce('Tools.DMSDictionary;dmsDocumentUploader.js', 'fi
 #set($xwikiUserName = $currentXWikiUserName.replaceAll('^XWiki\.', ''))
 <h2>Dokument upload</h2>
 <p>#includeFileUpload($doc $xwikiUserName)</p>
-#showAttachmentsList($doc)
+#set($attachmentsDoc = $doc)
+##TODO change to #parse('celMacros/celDMS/showAttachmentsList.vm')
+$xwiki.includeForm('LocalMacros.showAttachmentsList', false)
 #else
 Upload steht erst nach dem Anlegen zur Verfügung.<br/>
 Bitte speichern Sie das neue Dokument um es zu erstellen.
