@@ -11,36 +11,40 @@
       </tr>
     </thead>
     <tbody>
-      #foreach($result in $resultList)
-        <tr>
-          #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
-          #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
-          <td>
-            <a href="$tmpdoc.getURL()">
-              $!tmpobj.getProperty('docname').getValue()
-            </a>
-          </td>
-          <td>
-            <a href="$tmpdoc.getURL()">
-              $!datetool.format("dd.MM.yyyy HH:mm", $tmpdoc.getDate())
-            </a>
-          </td>
-          <td>
-            <a href="$tmpdoc.getURL()">
-              $!tmpobj.getProperty('author').getValue()
-            </a>
-          </td>
-          <td>
-            <a href="$tmpdoc.getURL()">
-              $!tmpobj.getProperty('version').getValue()
-            </a>
-          </td>
-          <td>
-            <a href="$tmpdoc.getURL()">
-              $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
-            </a>
-          </td>
-        </tr>
+      #if($resultList.size() > 0)
+        #foreach($result in $resultList)
+          <tr>
+            #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
+            #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
+            <td>
+              <a href="$tmpdoc.getURL()">
+                $!tmpobj.getProperty('docname').getValue()
+              </a>
+            </td>
+            <td>
+              <a href="$tmpdoc.getURL()">
+                $!datetool.format("dd.MM.yyyy HH:mm", $tmpdoc.getDate())
+              </a>
+            </td>
+            <td>
+              <a href="$tmpdoc.getURL()">
+                $!tmpobj.getProperty('author').getValue()
+              </a>
+            </td>
+            <td>
+              <a href="$tmpdoc.getURL()">
+                $!tmpobj.getProperty('version').getValue()
+              </a>
+            </td>
+            <td>
+              <a href="$tmpdoc.getURL()">
+                $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
+              </a>
+            </td>
+          </tr>
+        #end
+      #else
+        <tr><td>Nichts gefunden</td><td></td><td></td><td></td><td></td></tr>
       #end
     </tbody>
   </table>
