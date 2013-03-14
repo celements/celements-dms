@@ -1,9 +1,11 @@
 ##INPUT $resultList of lucene results
 <table class="folderContent">
 #foreach($result in $resultList)
+  #if("$!{result.space}" != 'DMS-Templates') ##TODO incorporate directly in query -> negation?
   <tr>
     #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
     <td>
+      <!-- $tmpdoc.getFullName() -->
       $!tmpdoc.getTitle()
     </td>
     <td>
@@ -17,5 +19,6 @@
       $!tmpobj.getProperty('status').getValue()
     </td>
   </tr>
+  #end
 #end
 </table>
