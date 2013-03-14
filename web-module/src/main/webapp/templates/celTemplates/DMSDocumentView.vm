@@ -1,0 +1,51 @@
+<div id="celdms_document_viewer" class="celdms_viewer">
+#set($cel_editobj_dict_prefix = 'celdms_editor_')
+#set($cel_editobj_externalForm = true)  
+#set($cel_embedded_editobj = true)
+#set($cel_editobj_title = $adminMsg.get('celdms_document_edit'))
+#set($cel_editobj_hasObjAddLink = false)
+#set($cel_editobj_hasObjRemoveLink = false)
+<div id="edit_celdms_document" class="edit_celdms_section">
+<div id="edit_celdms_document_left" class="celdms_edit_column_left">
+#set($cel_curObj = '')
+#set($cel_curObj = $doc.getObject('DMSClasses.DocumentClass', false))
+<div class="celdms_breadcrums">
+#set($labelDefObj = $doc.getObject('DMSClasses.LabelRefClass'))
+#set($mainLabel = "$!labelDefObj.getProperty('label_ref').getValue()")
+<ul style="list-style: none;">
+#set($helpNav = $xwiki.celementsweb.createNavigation())
+#set($docParents = $xwiki.celementsweb.getDocumentParentsList($mainLabel, true))
+#foreach($fullName in $util.reverseList($docParents))
+    <li style="float:left;">
+    <a href="$xwiki.getURL($fullName)">
+    $helpNav.getMultilingualMenuName($fullName, $language)
+    </a>
+    </li>
+#end
+</ul></div>
+<hr style="clear:both;"/>
+<h1>Dokument: &quot;$!{cel_curObj.getProperty('docname').getValue()}&quot;</h1>
+#if($hasedit || $isAdmin)
+<a class="dms_edit" href="$doc.getURL('edit',"xredirect=$!redirectURL")">
+  <img src="$celementsweb.getSkinFile(':celRes/editorsupport/pencil.gif', 'file')" alt="bearbeiten"/>
+</a>
+#end
+#set($cel_editobj_classname = "DMSClasses.DocumentClass")
+#set($cel_editobj_nb = $cel_curObj.getNumber())
+#set($cel_editobj_properties = "docname,status,author")
+#set($cel_editobj_readonly_properties = $cel_editobj_properties)
+  $xwiki.includeForm('celements2web:Templates.ObjectEdit',false)
+</div>
+<div id="edit_celdms_document_right" class="celdms_edit_column_right">
+#set($cel_editobj_properties = "version,keywords")
+#set($cel_editobj_readonly_properties = $cel_editobj_properties)
+  $xwiki.includeForm('celements2web:Templates.ObjectEdit',false)
+</div>
+</div>
+<div class="view_celdms_section">
+<h2>Anhänge</h2>
+#set($attachmentsDoc = $doc)
+##TODO change to #parse('celMacros/celDMS/showAttachmentsList.vm')
+$xwiki.includeForm('LocalMacros.showAttachmentsList', false)
+</div>
+</div>

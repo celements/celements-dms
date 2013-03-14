@@ -41,6 +41,14 @@
                 $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
               </a>
             </td>
+#if($hasedit || $isAdmin)
+            <td>
+#set($redirectURL = $doc.getURL())
+<a class="dms_edit" href="$tmpdoc.getURL('edit',"xredirect=$!redirectURL")">
+  <img src="$celementsweb.getSkinFile(':celRes/editorsupport/pencil.gif', 'file')" alt="bearbeiten"/>
+</a>
+            </td>
+#end
           </tr>
         #end
       #else
