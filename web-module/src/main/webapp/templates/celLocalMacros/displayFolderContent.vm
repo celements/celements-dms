@@ -14,10 +14,10 @@
       #foreach($result in $resultList)
         <tr>
           #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
+          #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
           <td>
             <a href="$tmpdoc.getURL()">
-              <!-- $tmpdoc.getFullName() -->
-              $!tmpdoc.getTitle()
+              $!tmpobj.getProperty('docname').getValue()
             </a>
           </td>
           <td>
@@ -25,7 +25,6 @@
               $!datetool.format("dd.MM.yyyy HH:mm", $tmpdoc.getDate())
             </a>
           </td>
-          #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
           <td>
             <a href="$tmpdoc.getURL()">
               $!tmpobj.getProperty('author').getValue()
