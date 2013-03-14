@@ -1,0 +1,6 @@
+#set($query = $services.lucene.createQuery())
+#set($devNull = $query.addRestriction($services.lucene.createRestriction("Celements2.PageType.page_type", '"DMS-Document"')))
+#set($luceneQuery = "$query.getQueryString()")
+#set($results = $xwiki.lucene.getSearchResults($luceneQuery, "title" ,"default,de"))
+#set($resultList = $results.getResults())
+$xwiki.includeForm('LocalMacros.displayFolderContent', false)
