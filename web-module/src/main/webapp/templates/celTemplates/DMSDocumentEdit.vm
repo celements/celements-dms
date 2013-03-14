@@ -1,5 +1,106 @@
+##$celementsweb.addExtJSfileOnce(':celJS/celDMS/celJSdmsDocumentUploader.js', 'file')
+$celementsweb.addExtJSfileOnce(':celJS/uploadAttachment.js', 'file')
+$celementsweb.addExtJSfileOnce('Tools.DMSDictionary;dmsDocumentUploader.js', 'file')
+#macro(showAttachmentsList $attachmentsDoc)
+    ###
+    ### List document attachments
+    ###
+    #if("$!redirect" == '')
+    #if("$!request.xredirect" != '')
+    #set($redirect = $request.xredirect)
+    #else
+    #set($redirect = "${doc.getURL()}#Attachments")
+    #end
+    #end
+    #set($showactions = 0)
+    #set($attachments = $attachmentsDoc.attachmentList)
+        <div id="attachmentscontent" class="xwikiintracontent">
+        <div id="attw">
+          <div id="_attachments">
+    #if($attachments.size()>0)
+    #foreach ($attach in $attachments)
+            <div class="attachment #if($velocityCount % 2 == 0) even #else odd #end">
+              <span class="mime">#mimetypeimg($attach.getMimeType().toLowerCase() $attach.getFilename().toLowerCase())</span>
+              <div class="information">
+              <span class="name"><a href="$attachmentsDoc.getAttachmentURL(${attach.filename}, 'download')" title="$msg.get('core.viewers.attachments.download')" target="_blank">#packName($attach.filename)</a></span>
+    #if($hasEdit || $hasAdmin)
+              <span class="xwikibuttonlinks">
+                ## Delete attachment link
+                <a class="deletelink" href="$attachmentsDoc.getAttachmentURL(${attach.filename}, 'delattachment', "xredirect=${redirect}")"  title="$msg.get('core.viewers.attachments.deleteTitle', [$xwiki.getXMLEncoded($attach.filename)])">$msg.get('core.viewers.attachments.delete')</a>
+                ## Dav Edit attachment link. We display the link hidden by default, and let the WebDAV JSX extension display it if
+                ## the browser supports Dav Edit 
+            #set($documentUrl=$attachmentsDoc.getExternalURL("download"))
+                #set($attachmentUrl="$documentUrl/$attach.filename")
+                #set($attachmentSignature="${request.contextPath}${request.servletPath}/download/")
+                #set($webdavSignature="${request.contextPath}/webdav/spaces/")
+                #set($fragments=$attachmentUrl.split($attachmentSignature))
+                #if($listtool.size($fragments) == 2)
+                  #set($prefix=$listtool.get($fragments, 0))
+                  #set($suffix=$listtool.get($fragments, 1))
+                  #set($davUrl="$prefix$webdavSignature$suffix")
+                  <a title="$msg.get('core.viewers.attachments.webdavEdit.title')" class="editlink hidden" href="$davUrl" onclick="if(XWiki && XWiki.WebDAV){XWiki.WebDAV.davEdit('$davUrl')}; return false;">$msg.get('core.viewers.attachments.webdavEdit')</a>
+                #end
+             </span>
+    #end ## hasEdit
+              <span class="version"><a href="$attachmentsDoc.getAttachmentURL(${attach.filename}, 'viewattachrev')" title="$msg.get('core.viewers.attachments.showHistory')">$attach.version</a></span>
+              <div class="meta">
+              <span class="publisher">$msg.get('core.viewers.attachments.author', [$xwiki.getUserName($attach.author)])</span>
+              <span class="date">$msg.get('core.viewers.attachments.date', [$!xwiki.formatDate($attach.date)])</span>
+              <span class="size">(#dynamicsize($attach.filesize))</span>
+              </div>
+              </div>
+            </div> ## row
+    #end ## foreach
+    <script type="text/javascript">
+    // <![CDATA[
+    // Let XWiki.WebDAV JS display links only if the browser support WebDAV.
+    if (XWiki && XWiki.WebDAV) { XWiki.WebDAV.displayDavLinks($('_attachments')); }
+    // When the document is loaded, trigger the attachment form enhancements.
+    document.observe("load", function() { new XWiki.viewers.Attachments(); });
+    // ]]>
+    </script>
+    #else ## No attachments
+    <p class="noitems">$msg.get('core.viewers.attachments.noAttachments')</p>
+    #end
+    #if($hasEdit || $hasAdmin)
+          <form action="$attachmentsDoc.getURL("upload")" enctype="multipart/form-data" method="post" id="AddAttachment">
+    <div>
+    <input type="hidden" name="xredirect" value="${xwiki.getFormEncoded($redirect)}" />
+    <fieldset id="attachform">
+            <legend>$msg.get('core.viewers.attachments.upload.title')</legend>
+            ## Temporarily disabled, until we fix attachment name handling
+            ## <div><label id="xwikiuploadnamelabel" for="xwikiuploadname">$msg.get('core.viewers.attachments.upload.filename')</label></div>
+            <div><input id="xwikiuploadname" type="hidden" name="filename" value="" size="40"/></div>
+            <div><label class="hidden" for="xwikiuploadfile">$msg.get('core.viewers.attachments.upload.file')</label><input id="xwikiuploadfile" type="file" name="filepath" value="" size="40" class="uploadFileInput"/></div>
+            <div>
+            <span class="buttonwrapper"><input type="submit" value="$msg.get('core.viewers.attachments.upload.submit')" class="button"/></span>
+            <span class="buttonwrapper"><input type="reset" value="$msg.get('core.viewers.attachments.upload.cancel')" class="button"/></span>
+            </div>
+            </fieldset>
+    </div>
+          </form>
+    #end
+          </div> ## attachments
+          </div> ## attw
+        </div> ## attachmentscontent    
+#end
+
+#macro(includeFileUpload $attachmentsDoc $teilnehmer)
+<div id="imagePickerUploadArea">
+<form id="celdms_upload_Form" action="$doc.getURL('view')" method="post" enctype="multipart/form-data"> 
+   <div id="progressBar" style="display:none">
+      <img src="$services.celementsweb.getSkinFile(':celRes/ajax-loader.gif', 'file')" />
+    </div>
+      <input type="hidden" class="celIgnoreDirty" name="xredirect" value="" /> 
+      <input type="hidden" class="celIgnoreDirty" id="celfileuploadToken" name="uploadToken" value="" />
+      <input style="display:none" class="celIgnoreDirty celfileupload celSupressAttachmentList" name="filepath" type="file" size="50" />
+      <span id="celdms_getTokenNotice">Der Upload wird überprüft...</span>
+</form>
+</div>
+#end
+
 <div id="celdms_document_editor" class="celdms_editor">
-<form id="edit" method="post" action="?" onsubmit="cancelCancelEdit()">
+<form id="dms_document_editor_form" method="post" action="?" onsubmit="cancelCancelEdit()">
 <input type="hidden" name="xpage" value="celements_ajax" />
 <input type="hidden" name="ajax_mode" value="saveDocumentWithValidation" />
 <input type="hidden" name="createIfNotExists" value="true" />
@@ -39,4 +140,15 @@
 #end
 ##TODO add label edit
 </form>
+<div class="edit_celdms_section">
+#if(!$doc.isNew())
+#set($xwikiUserName = $currentXWikiUserName.replaceAll('^XWiki\.', ''))
+<h2>Dokument upload</h2>
+<p>#includeFileUpload($doc $xwikiUserName)</p>
+#showAttachmentsList($doc)
+#else
+Upload steht erst nach dem Anlegen zur Verfügung.<br/>
+Bitte speichern Sie das neue Dokument um es zu erstellen.
+#end
+</div>
 </div>
