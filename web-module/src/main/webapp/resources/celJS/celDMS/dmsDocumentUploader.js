@@ -30,8 +30,13 @@ var getUploadToken = function() {
 var pickerUploadFinshed = function(event) {
   var uploadResult = event.memo.uploadResult;
   if (uploadResult && uploadResult.success && (uploadResult.success == 1)) {
-    $('attachmentscontent').insert({ top : loadingImg });
-        alert('upload done.' + event.memo.uploadResult);
+    var newAttElem = new Element('div').addClassName('attachment');
+    newAttElem.update(new Element('span').addClassName('mime'));
+    var infoElem = new Element('div').addClassName('information');
+    newAttElem.update(infoElem);
+    infoElem.update(new Element('span').addClassName('name').update(
+        uploadResult.attfilename + ' erfolgreich hochgeladen.'));
+    $('_attachments').insert({ top :  infoElem });
   } else {
     alert('failed to upload document.');
   }
