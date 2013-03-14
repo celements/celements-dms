@@ -1,6 +1,7 @@
-<div>
-  <form action="$xwiki.getURL('Content.Search')" method="post">
+<div style="padding-bottom: 10px;">
+  <form action="$xwiki.getURL('Content.Search')" method="get">
     <input type="text" name="q" value="$!request.q" />
     <input type="submit" value="Suchen" />
   </form>
+  <a href="$xwiki.getURL('Content.Search')">Erweiterte Suche</a>
 </div>
