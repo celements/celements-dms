@@ -1,24 +1,47 @@
 ##INPUT $resultList of lucene results
-<table class="folderContent">
-#foreach($result in $resultList)
-  #if("$!{result.space}" != 'DMS-Templates') ##TODO incorporate directly in query -> negation?
-  <tr>
-    #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
-    <td>
-      <!-- $tmpdoc.getFullName() -->
-      $!tmpdoc.getTitle()
-    </td>
-    <td>
-      $!datetool.format("dd.MM.yyyy HH:mm", $tmpdoc.getDate())
-    </td>
-    #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
-    <td>
-      $!tmpobj.getProperty('author').getValue()
-    </td>
-    <td>
-      $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
-    </td>
-  </tr>
-  #end
-#end
-</table>
+<div style="position: relative;">
+  <table class="folderContent" style="width: 100%;">
+    <thead>
+      <tr>
+        <th>Titel</th>
+        <th>Letzte &auml;nderung</th>
+        <th>Autor</th>
+        <th>Version</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      #foreach($result in $resultList)
+        <tr>
+          #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
+          #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
+          <td>
+            <a href="$tmpdoc.getURL()">
+              $!tmpobj.getProperty('docname').getValue()
+            </a>
+          </td>
+          <td>
+            <a href="$tmpdoc.getURL()">
+              $!datetool.format("dd.MM.yyyy HH:mm", $tmpdoc.getDate())
+            </a>
+          </td>
+          <td>
+            <a href="$tmpdoc.getURL()">
+              $!tmpobj.getProperty('author').getValue()
+            </a>
+          </td>
+          <td>
+            <a href="$tmpdoc.getURL()">
+              $!tmpobj.getProperty('version').getValue()
+            </a>
+          </td>
+          <td>
+            <a href="$tmpdoc.getURL()">
+              $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
+            </a>
+          </td>
+        </tr>
+      #end
+    </tbody>
+  </table>
+</div>

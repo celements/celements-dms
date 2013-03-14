@@ -1,0 +1,6 @@
+<div>
+  <form action="$xwiki.getURL('Content.Search')" method="post">
+    <input type="text" name="q" value="$!request.q" />
+    <input type="submit" value="Suchen" />
+  </form>
+</div>

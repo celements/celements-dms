@@ -4,7 +4,11 @@
 #set($q = '"')
 #set($labelVal = "${q}${doc.getFullName()}${q}")
 #set($devNull = $query.addRestriction($services.lucene.createRestriction("DMSClasses.LabelRefClass.label_ref", $labelVal)))
-#set($luceneQuery = "$query.getQueryString()")
+##TODO make not available in API
+#set($statusDeleted = '"DMSStati.zzzDeleted"')
+#set($luceneQuery = "$query.getQueryString() AND NOT ${services.lucene.createRestriction('DMSClasses.DocumentClass.status', $statusDeleted).getRestriction()}")
+#set($documentTemplate = '"DMS-Templates"')
+#set($luceneQuery = "$luceneQuery AND NOT ${services.lucene.createRestriction('space', $documentTemplate).getRestriction()}")
 #set($results = $xwiki.lucene.getSearchResults($luceneQuery, "title" ,"default,de"))
 #set($resultList = $results.getResults())
 $xwiki.includeForm('LocalMacros.displayFolderContent', false)
