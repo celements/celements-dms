@@ -1,3 +1,4 @@
+<a href="?xpage=celements_ajax&ajax_mode=createDocument&docType=DMS-Document"><img src="$services.celementsweb.getSkinFile(':icons/silk/add.gif', 'file')">Neues Dokument anlegen</a>
 #set($query = $services.lucene.createQuery())
 #set($devNull = $query.addRestriction($services.lucene.createRestriction("Celements2.PageType.page_type", '"DMS-Document"')))
 #set($q = '"')
