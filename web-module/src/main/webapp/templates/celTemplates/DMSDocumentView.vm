@@ -9,6 +9,21 @@
 <div id="edit_celdms_document_left" class="celdms_edit_column_left">
 #set($cel_curObj = '')
 #set($cel_curObj = $doc.getObject('DMSClasses.DocumentClass', false))
+<div class="celdms_breadcrums">
+#set($labelDefObj = $doc.getObject('DMSClasses.LabelRefClass'))
+#set($mainLabel = "$!labelDefObj.getProperty('label_ref').getValue()")
+<ul style="list-style: none;">
+#set($helpNav = $xwiki.celementsweb.createNavigation())
+#set($docParents = $xwiki.celementsweb.getDocumentParentsList($mainLabel, true))
+#foreach($fullName in $util.reverseList($docParents))
+    <li style="float:left;">
+    <a href="$xwiki.getURL($fullName)">
+    $helpNav.getMultilingualMenuName($fullName, $language)
+    </a>
+    </li>
+#end
+</ul></div>
+<hr style="clear:both;"/>
 <h1>Dokument: &quot;$!{cel_curObj.getProperty('docname').getValue()}&quot;</h1>
 #if($hasedit || $isAdmin)
 <a class="dms_edit" href="$doc.getURL('edit',"xredirect=$!redirectURL")">
