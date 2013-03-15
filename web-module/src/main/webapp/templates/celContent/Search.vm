@@ -2,8 +2,11 @@
   Erweiterte Suche:
   <form action="$xwiki.getURL('Content.Search')" method="get">
     <table style="width: 100%;">
-      <tr>
+      <tr style="border-bottom: 1px solid darkgrey;">
        <td>Irgendwo:</td><td colspan="3"><input style="width: 250px;" type="text" name="q" value="$!request.q" /></td>
+      </tr>
+      <tr>
+        <td colspan="4" style="background-color: #555; color: #f8f8f8; padding-left: 10px;">ODER</td>
       </tr>
       <tr>
        <td>Status:</td>
@@ -30,15 +33,19 @@
        <td>Letzte &auml;nderung:<br />Format yyyyMMddHHmm</td><td><input type="text" name="qDate" value="$!request.qDate" /></td>
       </tr>
       <tr>
+        <td colspan="4" style="background-color: #555; color: #f8f8f8; padding-left: 10px;">ODER</td>
+      </tr>
+      <tr>
        <td>Dateiname:</td><td><input type="text" name="qFilename" value="$!request.qFilename" /></td>
        <td>Dateiinhalt:<br />(nur f&uuml;r gewisse Dateitypen)</td><td><input type="text" name="qFileContent" value="$!request.qFileContent" /></td>
       </tr>
     </table>
     <input type="submit" value="Erweitert Suchen" />
+    <input type="reset" value="Felder Leeren" onclick="$$('form input[type=text], form select').each(function(ele){ele.value = '';}); return false;" />
   </form>
 </div>
 #set($query = $services.lucene.createQuery())
-#set($devNull = $query.addRestriction($services.lucene.createRestriction("Celements2.PageType.page_type", '"DMS-Document"')))
+#set($devNull = $query.addRestriction(${services.lucene.createRestriction('space', 'Content')}))
 #if("$!request.q" != '')
   #set($restrList = $util.getArrayList())
   #set($devNull = $restrList.add(${services.lucene.createRestriction('DMSClasses.DocumentClass.status', "$!request.q")}))
@@ -48,7 +55,7 @@
   #set($devNull = $restrList.add(${services.lucene.createRestriction('DMSClasses.DocumentClass.version', "$!request.q")}))
   #set($devNull = $restrList.add(${services.lucene.createRestriction('date', "$!request.q")}))
   #set($devNull = $restrList.add(${services.lucene.createRestriction('filename', "$!request.q")}))
-  #set($fileContentSearch = "AND $!request.qFileContent")
+  #set($generalSearch = " OR (type:attachment AND $!{request.q})")
   #set($devNull = $query.addOrRestrictionList($restrList))
 #end
 #if("$!request.qStatus" != '')
@@ -75,13 +82,17 @@
 #end
 #if(("$!request.qFilename" != '') || ("$!request.qFileContent" != ''))
   #set($devNull = $query.addRestriction(${services.lucene.createRestriction('type', "attachment")}))
+#else
+  #if("$!request.q" == '')
+    #set($devNull = $query.addRestriction($services.lucene.createRestriction("Celements2.PageType.page_type", '"DMS-Document"')))
+  #end
 #end
 #if("$!request.qFilename" != '')
   #set($devNull = $query.addRestriction(${services.lucene.createRestriction('filename', "$!request.qFilename")}))
 #end
 #if("$!request.qFileContent" != '')
   #set($q = '"')
-  #set($fileContentSearch = "AND +${q}$!{request.qFileContent}${q}")
+  #set($fileContentSearch = "AND +($!{request.qFileContent})")
 #else
   #set($fileContentSearch = "")
 #end
@@ -89,6 +100,9 @@
 #set($documentTemplate = '"DMS-Templates"')
 #set($luceneQuery = "${query.getQueryString()} AND NOT ${services.lucene.createRestriction('space', $documentTemplate).getRestriction()}")
 #set($luceneQuery = "$luceneQuery $fileContentSearch $noDeletedRestriction")
+#if("$!request.q" != '')
+  #set($luceneQuery = $luceneQuery.replaceAll("(.*\))(\).*)", "$1${generalSearch}$2"))
+#end
 #set($results = $xwiki.lucene.getSearchResults($luceneQuery, "title" ,"default,de"))
 #set($resultList = $results.getResults())
 $xwiki.includeForm('LocalMacros.displayFolderContent', false)
