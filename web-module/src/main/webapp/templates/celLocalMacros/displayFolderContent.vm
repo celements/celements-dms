@@ -12,44 +12,48 @@
     </thead>
     <tbody>
       #if($resultList.size() > 0)
+        #set($hasVal = ",")
         #foreach($result in $resultList)
-          <tr>
-            #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
-            #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
-            <td>
-              <a href="$tmpdoc.getURL()">
-                $!tmpobj.getProperty('docname').getValue()
-              </a>
-            </td>
-            <td>
-              <a href="$tmpdoc.getURL()">
-                $!datetool.format("dd.MM.yyyy HH:mm", $tmpdoc.getDate())
-              </a>
-            </td>
-            <td>
-              <a href="$tmpdoc.getURL()">
-                $!tmpobj.getProperty('author').getValue()
-              </a>
-            </td>
-            <td>
-              <a href="$tmpdoc.getURL()">
-                $!tmpobj.getProperty('version').getValue()
-              </a>
-            </td>
-            <td>
-              <a href="$tmpdoc.getURL()">
-                $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
-              </a>
-            </td>
-#if($hasedit || $isAdmin)
-            <td>
-#set($redirectURL = $doc.getURL())
-<a class="dms_edit" href="$tmpdoc.getURL('edit',"xredirect=$!redirectURL")">
-  <img src="$celementsweb.getSkinFile(':celRes/editorsupport/pencil.gif', 'file')" alt="bearbeiten"/>
-</a>
-            </td>
-#end
-          </tr>
+          #if($hasVal.indexOf(",$!{result.fullName},") < 0)
+            <tr>
+              #set($tmpdoc = $xwiki.getDocument($services.model.resolveDocument("${result.fullName}")))
+              #set($tmpobj = $tmpdoc.getObject('DMSClasses.DocumentClass'))
+              <td>
+                <a href="$tmpdoc.getURL()">
+                  $!tmpobj.getProperty('docname').getValue()
+                </a>
+              </td>
+              <td>
+                <a href="$tmpdoc.getURL()">
+                  $!datetool.format("dd.MM.yyyy HH:mm", $tmpdoc.getDate())
+                </a>
+              </td>
+              <td>
+                <a href="$tmpdoc.getURL()">
+                  $!tmpobj.getProperty('author').getValue()
+                </a>
+              </td>
+              <td>
+                <a href="$tmpdoc.getURL()">
+                  $!tmpobj.getProperty('version').getValue()
+                </a>
+              </td>
+              <td>
+                <a href="$tmpdoc.getURL()">
+                  $!xwiki.getDocument($!tmpobj.getProperty('status').getValue()).getTitle()
+                </a>
+              </td>
+              #if($hasedit || $isAdmin)
+              <td>
+                #set($redirectURL = $doc.getURL())
+                <a class="dms_edit" href="$tmpdoc.getURL('edit',"xredirect=$!redirectURL")">
+                  <img src="$celementsweb.getSkinFile(':celRes/editorsupport/pencil.gif', 'file')" alt="bearbeiten"/>
+                </a>
+              </td>
+              #end
+            </tr>
+            #set($hasVal = "$!{hasVal}$!{result.fullName},")
+          #end
         #end
       #else
         <tr><td>Nichts gefunden</td><td></td><td></td><td></td><td></td></tr>
