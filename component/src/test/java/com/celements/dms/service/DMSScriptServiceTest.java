@@ -1,19 +1,19 @@
 package com.celements.dms.service;
 
-
+import static com.celements.common.test.CelementsTestUtils.*;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.xwiki.script.service.ScriptService;
+import org.xwiki.test.AbstractComponentTestCase;
 
-import com.celements.common.test.AbstractBridgedComponentTestCase;
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.web.Utils;
 
-public class DMSScriptServiceTest extends AbstractBridgedComponentTestCase {
+public class DMSScriptServiceTest extends AbstractComponentTestCase {
 
   private XWiki xwiki;
   private XWikiContext context;
@@ -27,24 +27,9 @@ public class DMSScriptServiceTest extends AbstractBridgedComponentTestCase {
 
   @Test
   public void componentTest() {
-    replayAll();
+    replayDefault();
     assertNotNull(Utils.getComponent(ScriptService.class, "celdms"));
-    verifyAll();
-  }
-
-  //*************************************************************************************
-  // HELPER
-  //*************************************************************************************
-
-  
-  private void replayAll(Object ... mocks) {
-    replay(xwiki);
-    replay(mocks);
-  }
-
-  private void verifyAll(Object ... mocks) {
-    verify(xwiki);
-    verify(mocks);
+    verifyDefault();
   }
 
 }
