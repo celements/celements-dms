@@ -53,12 +53,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
-    <!-- Add here all your dependencies -->    
-    <!--<dependency>
+    <!-- Add here all your dependencies -->
+    <dependency>
       <groupId>com.celements</groupId>
       <artifactId>celements-dms</artifactId>
       <version>0.1-SNAPSHOT</version>
-    </dependency>-->
+    </dependency>
   </dependencies>
   <build>
     <finalName>dms-web</finalName>
