@@ -32,7 +32,7 @@
   <artifactId>dms-web</artifactId>
   <packaging>war</packaging>
   <name>DMS Web-Module</name>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <description>	</description>
   <licenses>
     <license>
@@ -45,7 +45,7 @@
     <connection>scm:git:git://github.com/celements/celements-dms</connection>
     <developerConnection>scm:git:git@github.com:celements/celements-dms.git</developerConnection>
     <url>https://github.com/celements/celements-dms</url>
-    <tag>HEAD</tag>
+    <tag>dms-web-0.1</tag>
   </scm>
   <properties>    
     <platform.core.version>2.18</platform.core.version>
